@@ -74,8 +74,4 @@ public class ReadMessagesPresenter {
         }
     }
 
-    private void showMessagesView(){
-
-    }
-
 }
