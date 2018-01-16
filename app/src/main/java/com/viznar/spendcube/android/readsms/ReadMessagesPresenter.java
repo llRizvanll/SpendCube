@@ -1,11 +1,16 @@
 package com.viznar.spendcube.android.readsms;
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.ContentResolver;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
-import android.util.Log;
+import android.support.annotation.Nullable;
+
+import com.viznar.spendcube.android.data.db.MessageEntity;
+import com.viznar.spendcube.android.data.local.LocalRepository;
+import com.viznar.spendcube.android.data.local.LocalRepositoryImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,11 +26,13 @@ public class ReadMessagesPresenter {
     private Activity activity;
     private ReadMessageListener readMessageListener;
     private String LOG_TAG = "READ_MESSAGES";
-    private List<MessageDataM> messageDataMList = new ArrayList<>();
+    private List<MessageEntity> messageEntities = new ArrayList<>();
+    private LocalRepository localRepository;
 
     public ReadMessagesPresenter(ReadMessageListener readMessageListener, Activity activity) {
         this.readMessageListener = readMessageListener;
         this.activity = activity;
+        this.localRepository = new LocalRepositoryImpl(activity);
     }
 
     public void syncSMSData(){
@@ -66,11 +73,21 @@ public class ReadMessagesPresenter {
                     }
                 }
 
-                messageDataMList.add(new MessageDataM(msgBody,msgSender,msgDate,msgReadStatus));
+                //messageEntities.add(new MessageDataM(msgBody,msgSender,msgDate,msgReadStatus));
+
+                messageEntities.add(new MessageEntity(msgBody,msgSender,msgDate,msgReadStatus));
 
             } while (cursor.moveToNext());
 
-            readMessageListener.onSuccess(messageDataMList);
+            try{
+                localRepository.deleteAllMessages();
+                localRepository.insertMessages(messageEntities);
+
+                readMessageListener.onSuccess(localRepository.getAllMessages());
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

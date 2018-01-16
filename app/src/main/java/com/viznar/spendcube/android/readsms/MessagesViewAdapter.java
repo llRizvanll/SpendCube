@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.viznar.spendcube.android.R;
+import com.viznar.spendcube.android.data.db.MessageEntity;
 
 import java.util.List;
 
@@ -17,10 +18,10 @@ import java.util.List;
 
 public class MessagesViewAdapter extends RecyclerView.Adapter<MessagesViewAdapter.MessagesViewHolder> {
 
-    private List<MessageDataM> messageDataMList;
+    private List<MessageEntity> messageDataMList;
     private Activity activity;
 
-    public MessagesViewAdapter(Activity activity, List<MessageDataM> messageDataMList){
+    public MessagesViewAdapter(Activity activity, List<MessageEntity> messageDataMList){
         this.activity = activity;
         this.messageDataMList = messageDataMList;
     }
@@ -41,7 +42,7 @@ public class MessagesViewAdapter extends RecyclerView.Adapter<MessagesViewAdapte
 
     @Override
     public void onBindViewHolder(MessagesViewHolder holder, int position) {
-        holder.messageItemTextView.setText(messageDataMList.get(position).getMsgBody());
+        holder.messageItemTextView.setText(messageDataMList.get(position).getMessageBody());
     }
 
     @Override

@@ -2,21 +2,30 @@ package com.viznar.spendcube.android;
 
 import android.Manifest;
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.viznar.spendcube.android.data.db.MessageEntity;
+import com.viznar.spendcube.android.data.local.LocalRepository;
+import com.viznar.spendcube.android.data.local.LocalRepositoryImpl;
 import com.viznar.spendcube.android.readsms.MessageDataM;
 import com.viznar.spendcube.android.readsms.MessagesViewAdapter;
 import com.viznar.spendcube.android.readsms.ReadMessageListener;
@@ -60,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements ReadMessageListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         activity = this;
+
         mRecyclerView = (RecyclerView) findViewById(R.id.messages_listview);
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -119,8 +129,8 @@ public class MainActivity extends AppCompatActivity implements ReadMessageListen
     }
 
     @Override
-    public void onSuccess(List<MessageDataM> messageData) {
-        Toast.makeText(activity,"Red All Messagess",Toast.LENGTH_SHORT).show();
+    public void onSuccess(List<MessageEntity> messageData) {
+        Toast.makeText(activity,"Red All Messagess "+messageData.size(),Toast.LENGTH_SHORT).show();
 
         if (messagesViewAdapter == null){
             messagesViewAdapter = new MessagesViewAdapter(activity,messageData);
@@ -129,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements ReadMessageListen
     }
 
     @Override
-    public void onError(String message) {
+    public void onError(String message) {}
 
-    }
 }
