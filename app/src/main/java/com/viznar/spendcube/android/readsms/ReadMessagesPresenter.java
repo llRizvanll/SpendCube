@@ -5,8 +5,10 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.viznar.spendcube.android.data.db.MessageEntity;
 import com.viznar.spendcube.android.data.local.LocalRepository;
@@ -14,6 +16,7 @@ import com.viznar.spendcube.android.data.local.LocalRepositoryImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -44,20 +47,30 @@ public class ReadMessagesPresenter {
 
         Cursor cursor = cr.query(inboxUri, reqCols, null, null, null);
 
-        //Log.d(LOG_TAG, "ALL MESSAGES : "+ DatabaseUtils.dumpCursorToString(cursor));
+        Log.d(LOG_TAG, "ALL MESSAGES : "+ DatabaseUtils.dumpCursorToString(cursor));
 
         if (cursor.moveToFirst()) {
             do {
-                String msgBody = "",msgSender = "",msgDate = "";
+                String msgBody = "",msgSender = "",msgDate = "", millis ;
                 Integer msgReadStatus = 0;
+                Integer month = 1 , year = 2018, day = 1;
                 for (int i = 0; i < cursor.getColumnCount(); i++) {
 
                     if (cursor.getColumnName(i).equals("date")) {
 
                         long milliSeconds = Long.parseLong(cursor.getString(i));
-                        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd,yyyy HH:mm:ss aa");
+                        /*SimpleDateFormat formatter = new SimpleDateFormat("MMM dd,yyyy HH:mm:ss aa");
                         Date resultDate = new Date(milliSeconds);
-                        msgDate = formatter.format(resultDate);
+                        msgDate = formatter.format(resultDate);*/
+                        Calendar c = Calendar.getInstance();
+                        //Set time in milliseconds
+                        c.setTimeInMillis(Long.valueOf(milliSeconds));
+                        year = c.get(Calendar.YEAR);
+                        month = c.get(Calendar.MONTH)+1;
+                        day = c.get(Calendar.DAY_OF_MONTH);
+                        /*int hr = c.get(Calendar.HOUR);
+                        int min = c.get(Calendar.MINUTE);
+                        int sec = c.get(Calendar.SECOND);*/
 
                     } else if (cursor.getColumnName(i).equals("address")) {
 
@@ -74,8 +87,17 @@ public class ReadMessagesPresenter {
                 }
 
                 //messageEntities.add(new MessageDataM(msgBody,msgSender,msgDate,msgReadStatus));
-
-                messageEntities.add(new MessageEntity(msgBody,msgSender,msgDate,msgReadStatus));
+                MessageEntity messageEntityObj = new MessageEntity(msgBody,msgSender,msgDate,msgReadStatus);
+                try{
+                    messageEntityObj.setMessageMonth(String.valueOf(month));
+                    messageEntityObj.setMessageDay(String.valueOf(day));
+                    messageEntityObj.setMessageYear(String.valueOf(year));
+                    messageEntityObj.setMessageMonthYear(String.valueOf(day)+" - "+String.valueOf(month)+" - "+String.valueOf(year));
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                messageEntities.add(messageEntityObj);
 
             } while (cursor.moveToNext());
 
@@ -91,4 +113,17 @@ public class ReadMessagesPresenter {
         }
     }
 
+
+    private String getMonthYearByMessageTimeInMillis(String milliseconds){
+        Calendar c = Calendar.getInstance();
+        //Set time in milliseconds
+        c.setTimeInMillis(Long.valueOf(milliseconds));
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+//        int mDay = c.get(Calendar.DAY_OF_MONTH);
+//        int hr = c.get(Calendar.HOUR);
+//        int min = c.get(Calendar.MINUTE);
+//        int sec = c.get(Calendar.SECOND);
+        return ""+mMonth+"-"+mYear;
+    }
 }

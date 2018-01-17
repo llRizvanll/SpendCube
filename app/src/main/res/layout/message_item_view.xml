@@ -1,18 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp"
+    app:cardBackgroundColor="#fff"
+    app:cardElevation="8dp"
+    android:layout_margin="8dp">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:id="@+id/message_item_txtview"
-        android:textSize="14sp"
-        android:text="Hello"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Section"
+            android:background="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textColor="#fff"
+            android:gravity="center"
+            android:visibility="visible"
+            android:id="@+id/sectionview_txt"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#b7a3a1a1"/>
-</android.support.constraint.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:padding="5dp"
+                android:ellipsize="end"
+                android:gravity="left"
+                android:background="#4a148c"
+                android:textColor="#fff"
+                android:id="@+id/message_header_item_txtview"
+                android:textSize="18sp"
+                android:text="Hello"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_notifications_black_24dp"
+                />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_home_black_24dp"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:id="@+id/message_item_txtview"
+            android:textSize="16sp"
+            android:text="Hello"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#b7a3a1a1"/>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

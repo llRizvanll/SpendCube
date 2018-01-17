@@ -28,7 +28,7 @@ public interface MessagesDAO {
     List<MessageEntity> getAllMessages();
 
     @Query("SELECT * FROM messageentity WHERE messageSender = :messageSender")
-    Maybe<MessageEntity> getMessageEntityBySender(String messageSender);
+    List<MessageEntity> getMessageEntityBySender(String messageSender);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertMessage(MessageEntity messageEntity);

@@ -23,8 +23,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        android:scrollbarSize="10sp"
-        android:scrollbarStyle="outsideOverlay"
+        android:scrollbarThumbVertical="@color/colorAccent"
+        android:scrollbarSize="2dp"
+        android:scrollbarStyle="insideInset"
         android:id="@+id/messages_listview"/>
 
     <android.support.design.widget.BottomNavigationView

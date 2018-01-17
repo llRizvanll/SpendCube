@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +27,10 @@ import android.widget.Toast;
 import com.viznar.spendcube.android.data.db.MessageEntity;
 import com.viznar.spendcube.android.data.local.LocalRepository;
 import com.viznar.spendcube.android.data.local.LocalRepositoryImpl;
+import com.viznar.spendcube.android.detail.ItemDetailsActivity;
+import com.viznar.spendcube.android.detail.MessageDataPass;
 import com.viznar.spendcube.android.readsms.MessageDataM;
+import com.viznar.spendcube.android.readsms.MessageItemActionListener;
 import com.viznar.spendcube.android.readsms.MessagesViewAdapter;
 import com.viznar.spendcube.android.readsms.ReadMessageListener;
 import com.viznar.spendcube.android.readsms.ReadMessagesPresenter;
@@ -70,9 +74,9 @@ public class MainActivity extends AppCompatActivity implements ReadMessageListen
         setContentView(R.layout.activity_main);
         activity = this;
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.messages_listview);
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        mRecyclerView = findViewById(R.id.messages_listview);
+        mTextMessage   = findViewById(R.id.message);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mRecyclerView.setHasFixedSize(true);
@@ -96,9 +100,13 @@ public class MainActivity extends AppCompatActivity implements ReadMessageListen
             return;
         }
         else{
-            messagesPresenter = new ReadMessagesPresenter(this,activity);
-            messagesPresenter.syncSMSData();
+            getData();
         }
+    }
+
+    private void getData(){
+        messagesPresenter = new ReadMessagesPresenter(this,activity);
+        messagesPresenter.syncSMSData();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -106,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements ReadMessageListen
     protected void onResume() {
         super.onResume();
         //checkForReadPermission();
-        if (checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED){
+        /*if (checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED){
 
-        }
+        }*/
     }
 
 
@@ -117,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements ReadMessageListen
         switch (requestCode) {
             case REQUIRED_PERMISSION_READSMS:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                    getData();
                 } else {
                     Toast.makeText(MainActivity.this, "Access messages Denied", Toast.LENGTH_SHORT)
                             .show();
@@ -131,14 +139,29 @@ public class MainActivity extends AppCompatActivity implements ReadMessageListen
     @Override
     public void onSuccess(List<MessageEntity> messageData) {
         Toast.makeText(activity,"Red All Messagess "+messageData.size(),Toast.LENGTH_SHORT).show();
-
-        if (messagesViewAdapter == null){
-            messagesViewAdapter = new MessagesViewAdapter(activity,messageData);
-            mRecyclerView.setAdapter(messagesViewAdapter);
-        }
+        messagesViewAdapter = new MessagesViewAdapter(messageData, messageItemActionListener);
+        mRecyclerView.setAdapter(messagesViewAdapter);
     }
 
     @Override
     public void onError(String message) {}
 
+
+    MessageItemActionListener messageItemActionListener = new MessageItemActionListener() {
+
+        @Override
+        public void onMessageSenderClick(final MessageEntity messageEntity, String messageSender) {
+
+            Intent startItemDetailIntent = new Intent(activity, ItemDetailsActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("messagedata", new MessageDataPass(messageSender));
+            startItemDetailIntent.putExtra("messagebundle",bundle);
+            startActivity(startItemDetailIntent);
+        }
+
+        @Override
+        public void onIconClick() {
+
+        }
+    };
 }

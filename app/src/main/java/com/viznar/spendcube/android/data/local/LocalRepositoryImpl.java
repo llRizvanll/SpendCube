@@ -45,7 +45,7 @@ public class LocalRepositoryImpl implements LocalRepository {
     }
 
     @Override
-    public Maybe<MessageEntity> getMessageEntityBySender(String messageSender) {
+    public List<MessageEntity> getMessageEntityBySender(String messageSender) {
         return messagesDAO.getMessageEntityBySender(messageSender);
     }
 

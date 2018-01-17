@@ -19,18 +19,23 @@ import java.util.List;
 public class MessagesViewAdapter extends RecyclerView.Adapter<MessagesViewAdapter.MessagesViewHolder> {
 
     private List<MessageEntity> messageDataMList;
-    private Activity activity;
 
-    public MessagesViewAdapter(Activity activity, List<MessageEntity> messageDataMList){
-        this.activity = activity;
+    private MessageItemActionListener messageItemActionListener;
+
+    public MessagesViewAdapter( List<MessageEntity> messageDataMList, MessageItemActionListener messageItemActionListener){
         this.messageDataMList = messageDataMList;
+        this.messageItemActionListener = messageItemActionListener;
     }
 
     public static class MessagesViewHolder extends RecyclerView.ViewHolder{
         TextView messageItemTextView;
+        TextView messageSectionTextView;
+        TextView messageSenderTextView;
         public MessagesViewHolder(View view){
             super(view);
             messageItemTextView = (TextView) view.findViewById(R.id.message_item_txtview);
+            messageSectionTextView = (TextView) view.findViewById(R.id.sectionview_txt);
+            messageSenderTextView = (TextView) view.findViewById(R.id.message_header_item_txtview);
         }
     }
 
@@ -42,7 +47,27 @@ public class MessagesViewAdapter extends RecyclerView.Adapter<MessagesViewAdapte
 
     @Override
     public void onBindViewHolder(MessagesViewHolder holder, int position) {
-        holder.messageItemTextView.setText(messageDataMList.get(position).getMessageBody());
+
+        final MessageEntity messageEntity = messageDataMList.get(position);
+        holder.messageItemTextView.setText(messageEntity.getMessageBody());
+        holder.messageSenderTextView.setText(messageEntity.getMessageSender());
+
+        holder.messageSenderTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                messageItemActionListener.onMessageSenderClick(messageEntity, messageEntity.getMessageSender());
+            }
+        });
+
+        try{
+            if (messageEntity.getMessageMonthYear()!=null && !messageEntity.getMessageMonthYear().trim().isEmpty()){
+                holder.messageSectionTextView.setText(messageEntity.getMessageMonthYear());
+                holder.messageSectionTextView.setVisibility(View.VISIBLE);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

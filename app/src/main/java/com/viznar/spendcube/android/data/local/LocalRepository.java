@@ -20,7 +20,7 @@ public interface LocalRepository {
 
     List<MessageEntity> getAllMessages();
 
-    Maybe<MessageEntity> getMessageEntityBySender(String messageSender);
+    List<MessageEntity> getMessageEntityBySender(String messageSender);
 
     void insertMessage(MessageEntity messageEntity);
 
