@@ -30,6 +30,9 @@ public interface MessagesDAO {
     @Query("SELECT * FROM messageentity WHERE messageSender = :messageSender")
     List<MessageEntity> getMessageEntityBySender(String messageSender);
 
+    @Query("SELECT * FROM messageentity WHERE messageBody LIKE '%' || :searchTerm || '%' OR messageSender LIKE '%' || :searchTerm || '%' ")
+    List<MessageEntity> searchKeywordInMessages(String searchTerm);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertMessage(MessageEntity messageEntity);
 

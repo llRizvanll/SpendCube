@@ -105,7 +105,7 @@ public class ReadMessagesPresenter {
                 localRepository.deleteAllMessages();
                 localRepository.insertMessages(messageEntities);
 
-                readMessageListener.onSuccess(localRepository.getAllMessages());
+                loadMessagesOntoList();
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -113,17 +113,13 @@ public class ReadMessagesPresenter {
         }
     }
 
+    public void loadMessagesOntoList(){
+        readMessageListener.onSuccess(localRepository.getAllMessages());
+    }
 
-    private String getMonthYearByMessageTimeInMillis(String milliseconds){
-        Calendar c = Calendar.getInstance();
-        //Set time in milliseconds
-        c.setTimeInMillis(Long.valueOf(milliseconds));
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-//        int mDay = c.get(Calendar.DAY_OF_MONTH);
-//        int hr = c.get(Calendar.HOUR);
-//        int min = c.get(Calendar.MINUTE);
-//        int sec = c.get(Calendar.SECOND);
-        return ""+mMonth+"-"+mYear;
+    public void searchQuery(String searchTerm){
+        if (localRepository.searchKeywordInMessages(searchTerm)!=null){
+            readMessageListener.onSuccess(localRepository.searchKeywordInMessages(searchTerm));
+        }
     }
 }

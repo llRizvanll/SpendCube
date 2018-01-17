@@ -20,6 +20,8 @@ public interface LocalRepository {
 
     List<MessageEntity> getAllMessages();
 
+    List<MessageEntity> searchKeywordInMessages(String searchTerm);
+
     List<MessageEntity> getMessageEntityBySender(String messageSender);
 
     void insertMessage(MessageEntity messageEntity);

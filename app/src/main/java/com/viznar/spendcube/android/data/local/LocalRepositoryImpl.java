@@ -50,6 +50,11 @@ public class LocalRepositoryImpl implements LocalRepository {
     }
 
     @Override
+    public List<MessageEntity> searchKeywordInMessages(String searchTerm) {
+        return messagesDAO.searchKeywordInMessages(searchTerm);
+    }
+
+    @Override
     public void insertMessage(final MessageEntity messageEntity) {
         messagesDAO.insertMessage(messageEntity);
 //        AsyncTask.execute(new Runnable() {

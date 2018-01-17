@@ -9,4 +9,6 @@
     <string name="footer_analyser">Analyser</string>
     <string name="footer_profile">Profile</string>
 
+    <string name="search_hint">Search in Messages</string>
+
 </resources>
